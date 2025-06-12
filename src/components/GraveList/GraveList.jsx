@@ -1,16 +1,19 @@
 "use client";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import "./GraveList.css";
 
 export default function GraveList({
                                       graves = [],
                                       role = "",
                                       onSelectGrave = () => {},
+                                      onSelectGraveId = () => {},
                                       onSaveGrave = () => {},
                                       onDeleteGrave = () => {},
                                   }) {
     const [editingId, setEditingId] = useState(null);
     const [editedGrave, setEditedGrave] = useState({});
+
+
 
     const handleEdit = (grave) => {
         setEditingId(grave.id);
@@ -67,7 +70,10 @@ export default function GraveList({
                                 <h3>ФИО: {human.full_name}</h3>
                                 <h3>Дата рождения: {new Date(human.date_birth).toLocaleDateString('ru-RU')}</h3>
                                 <h3>Дата смерти: {new Date(human.date_death).toLocaleDateString('ru-RU')}</h3>
-                                <button onClick={() => onSelectGrave(human)}>Посмотреть</button>
+                                <button onClick={() => {
+                                    onSelectGraveId(human.id)
+                                    onSelectGrave(human)
+                                }}>Посмотреть</button>
                             </div>
                         )}
                     </li>

@@ -15,6 +15,7 @@ export default function Home() {
     const [human, setHuman] = useState([]);
     const [filteredGraves, setFilteredGraves] = useState([]);
     const [selectedGrave, setSelectedGrave] = useState(null);
+    const [selectedHumanId, setSelectedHumanId] = useState(null);
     const [userRole, setUserRole] = useState("");
     const [filteredGravesHuman, setFilteredGravesHuman] = useState([]);
 
@@ -65,6 +66,10 @@ export default function Home() {
         setSelectedGrave(grave);
     };
 
+    const selectGraveId = (grave) => {
+        setSelectedHumanId(grave);
+    };
+
     const updateGrave = (updatedGrave) => {
         // У Go‐сервиса нет PATCH для Burial, поэтому пока просто меняем локально
         const updated = graves.map((g) => (g.id === updatedGrave.id ? updatedGrave : g));
@@ -98,11 +103,12 @@ export default function Home() {
                     graves={filteredGraves.length > 0 ? filteredGraves : human}
                     role={userRole}
                     onSelectGrave={selectGrave}
+                    onSelectGraveId={selectGraveId}
                     onSaveGrave={updateGrave}
                     onDeleteGrave={removeGrave}
                 />
 
-            {selectedGrave && <CemeteryDetail grave={selectedGrave} />}
+            {selectedGrave && <CemeteryDetail grave={selectedHumanId} />}
             <Footer />
         </div>
     );
