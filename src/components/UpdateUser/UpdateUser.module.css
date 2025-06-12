@@ -1,0 +1,26 @@
+.formContainer {
+    max-width: 500px;
+    margin: 1rem auto;
+    padding: 1rem;
+    background-color: #f1f5f9;
+    border-radius: 10px;
+}
+
+.formContainer input,
+.formContainer select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+.submitBtn {
+    background-color: #22c55e;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+}
