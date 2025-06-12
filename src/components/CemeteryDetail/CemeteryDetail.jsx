@@ -1,49 +1,60 @@
 "use client";
-import React from "react";
+import React, {useEffect} from "react";
 import "./CemeteryDetail.css";
 
 import Map from '../Map/Map';
+import {GetByIdHuman} from "@/lib/burialsService";
 
 export default function CemeteryDetail({ grave }) {
+    const [human, setHuman] = React.useState();
     if (!grave) return null;
+    useEffect(() => {
+        const fetchHuman = async () => {
+            try {
+                const data = await GetByIdHuman(grave);
+                setHuman(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
 
-    // Подставим базовые тестовые данные, если grave не полон
-    const testGrave = {
-        name: 'Иван',
-        surname: 'Иванов',
-        patronymic: 'Иванович',
-        birthYear: '1950',
-        deathYear: '2020',
-        address: 'Некое кладбище, Улица памяти, 5',
-        description: 'Описание захоронения',
-        latitude: 55.751574,
-        longitude: 37.573856,
-    };
+        fetchHuman();
+
+    }, [grave]);
+
+    useEffect(() => {
+        console.log(human);
+    }, [human]);
+
 
     const graveData = {
-        ...testGrave,
+        ...human,
         ...grave,
     };
 
     return (
         <div className="grave-detail">
-            <h2>Детали захоронения</h2>
-            <h3>{graveData.name} {graveData.surname} {graveData.patronymic}</h3>
-            <p>Дата рождения: {graveData.birthYear}</p>
-            <p>Дата смерти: {graveData.deathYear}</p>
-            <p>Место захоронения: {graveData.address}</p>
-            <p>{graveData.description}</p>
+            {human && (
+                <>
+                    <h2>Детали захоронения</h2>
+                    <h3>{human.fullName}</h3>
 
-            {/* Карта с координатами */}
-            <Map
-                coords={{ latitude: graveData.latitude, longitude: graveData.longitude }}
-                info={{
-                    name: graveData.name,
-                    surname: graveData.surname,
-                    birthYear: graveData.birthYear,
-                    deathYear: graveData.deathYear,
-                }}
-            />
+                    <p>Кладбище: {human.cemeteryName}</p>
+                    <p>Участок: {human.placeName}</p>
+                    <p>Адрес: {human.address}</p>
+
+                    {/* Карта с координатами */}
+                    {human.latitude && human.longitude && (
+                        <Map
+                            coords={{ latitude: human.latitude, longitude: human.longitude }}
+                            info={{
+                                address: human.address,
+                                name: human.fullName,
+                            }}
+                        />
+                    )}
+                </>
+            )}
         </div>
     );
 }

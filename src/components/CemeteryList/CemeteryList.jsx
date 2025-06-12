@@ -41,4 +41,4 @@ export default function CemeteryList({ onSelectCemetery }) {
             </ul>
         </div>
     );
-}
+})}

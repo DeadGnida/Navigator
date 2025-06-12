@@ -6,10 +6,14 @@ export default function Map({ coords, info }) {
 
     useEffect(() => {
         if (!coords || !info) return;
-
         const { latitude, longitude } = coords;
 
         const initMap = () => {
+            // Очистка контейнера перед повторным рендером
+            if (mapRef.current) {
+                mapRef.current.innerHTML = '';
+            }
+
             const map = new window.ymaps.Map(mapRef.current, {
                 center: [latitude, longitude],
                 zoom: 15,
@@ -17,16 +21,15 @@ export default function Map({ coords, info }) {
             });
 
             const balloonHtml = `
-                <strong>${info.name} ${info.surname}</strong><br />
-                <p>Дата рождения: ${info.birthYear || '—'}</p>
-                <p>Дата смерти: ${info.deathYear || '—'}</p>
-                <button onclick="window.open('https://yandex.ru/maps/?rtext=${latitude},${longitude}&rtt=auto')">
-                    Проложить маршрут
-                </button>
-            `;
+            <strong>${info.name}</strong><br/>
+            <strong>${info.address}</strong><br/>
+            <button onclick="window.open('https://yandex.ru/maps/?rtext=${latitude},${longitude}&rtt=auto')">
+                Проложить маршрут
+            </button>
+        `;
 
             const placemark = new window.ymaps.Placemark([latitude, longitude], {
-                balloonContentHeader: `${info.name} ${info.surname}`,
+                balloonContentHeader: `${info.name || ''} ${info.surname || ''}`,
                 balloonContent: balloonHtml,
             }, {
                 preset: 'islands#icon',

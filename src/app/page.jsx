@@ -8,6 +8,7 @@ import GraveList from "@/components/GraveList/GraveList";
 import CemeteryDetail from "@/components/CemeteryDetail/CemeteryDetail";
 import Footer from "@/components/Footer/Footer";
 import { getAllBurials, deleteBurial } from "@/lib/api";
+import {GetHumans} from "@/lib/humanService";
 
 export default function Home() {
     const [graves, setGraves] = useState([]);
@@ -15,41 +16,46 @@ export default function Home() {
     const [selectedGrave, setSelectedGrave] = useState(null);
     const [userRole, setUserRole] = useState("");
 
-    useEffect(() => {
-        // При загрузке страницы ‒ подгружаем все захоронения с сервера
-        (async () => {
-            try {
-                const data = await getAllBurials();
-                setGraves(data);
-                setFilteredGraves(data);
-            } catch (err) {
-                console.error(err);
-            }
-        })();
 
-        // Если в sessionStorage есть user, достаём роль
-        const sessionUser = sessionStorage.getItem("user");
-        if (sessionUser) {
-            const usr = JSON.parse(sessionUser);
-            setUserRole(usr.role);
-        }
-    }, []);
+
+
+        useEffect(() => {
+            const fetchHumans = async () => {
+                try {
+                    const data = await GetHumans();
+                    const formatted = Array.isArray(data) ? data : [data];
+                    setGraves(formatted); // сохраняем людей в graves
+                } catch (err) {
+                    console.error("Ошибка загрузки людей:", err);
+                }
+            };
+
+            fetchHumans();
+        }, []);
+
 
     const updateFilter = useCallback(
         (criteria) => {
-            if (graves === null) return;
+            if (!graves) return;
+
             const result = graves.filter((grave) => {
+                const fullName = grave.full_name.toLowerCase();
+                const nameFilter = criteria.name ? criteria.name.toLowerCase() : "";
+                const birthYearMatch = !criteria.birthYear || new Date(grave.date_birth).getFullYear().toString() === criteria.birthYear;
+                const deathYearMatch = !criteria.deathYear || new Date(grave.date_death).getFullYear().toString() === criteria.deathYear;
+
                 return (
-                    (!criteria.surname || grave.fullName.includes(criteria.surname)) &&
-                    (!criteria.name || grave.fullName.includes(criteria.name)) &&
-                    (!criteria.birthYear || grave.createdAt?.slice(0, 4) == criteria.birthYear) &&
-                    (!criteria.deathYear || grave.createdAt?.slice(0, 4) == criteria.deathYear)
+                    (!nameFilter || fullName.includes(nameFilter)) &&
+                    birthYearMatch &&
+                    deathYearMatch
                 );
             });
+
             setFilteredGraves(result);
         },
         [graves]
     );
+
 
     const selectGrave = (grave) => {
         setSelectedGrave(grave);
@@ -82,7 +88,7 @@ export default function Home() {
         <div>
             <Header />
             <Filter onFilterChange={updateFilter} />
-            {filteredGraves === null && (
+
                 <GraveList
                     graves={filteredGraves}
                     role={userRole}
@@ -90,7 +96,7 @@ export default function Home() {
                     onSaveGrave={updateGrave}
                     onDeleteGrave={removeGrave}
                 />
-            )}
+
             {selectedGrave && <CemeteryDetail grave={selectedGrave} />}
             <Footer />
         </div>
