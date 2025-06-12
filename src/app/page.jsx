@@ -12,9 +12,11 @@ import {GetHumans} from "@/lib/humanService";
 
 export default function Home() {
     const [graves, setGraves] = useState([]);
+    const [human, setHuman] = useState([]);
     const [filteredGraves, setFilteredGraves] = useState([]);
     const [selectedGrave, setSelectedGrave] = useState(null);
     const [userRole, setUserRole] = useState("");
+    const [filteredGravesHuman, setFilteredGravesHuman] = useState([]);
 
 
 
@@ -25,6 +27,7 @@ export default function Home() {
                     const data = await GetHumans();
                     const formatted = Array.isArray(data) ? data : [data];
                     setGraves(formatted); // сохраняем людей в graves
+                    setHuman(formatted);
                 } catch (err) {
                     console.error("Ошибка загрузки людей:", err);
                 }
@@ -34,28 +37,29 @@ export default function Home() {
         }, []);
 
 
-    const updateFilter = useCallback(
-        (criteria) => {
-            if (!graves) return;
+    const updateFilter = useCallback((criteria) => {
+        const result = human.filter((person) => {
+            const fullName = person.full_name.toLowerCase();
+            const birthYear = person.date_birth ? new Date(person.date_birth).getUTCFullYear() : null;
+            const deathYear = person.date_death ? new Date(person.date_death).getUTCFullYear() : null;
 
-            const result = graves.filter((grave) => {
-                const fullName = grave.full_name.toLowerCase();
-                const nameFilter = criteria.name ? criteria.name.toLowerCase() : "";
-                const birthYearMatch = !criteria.birthYear || new Date(grave.date_birth).getFullYear().toString() === criteria.birthYear;
-                const deathYearMatch = !criteria.deathYear || new Date(grave.date_death).getFullYear().toString() === criteria.deathYear;
+            const matchesFullName =
+                !criteria.fullName || fullName.includes(criteria.fullName.toLowerCase());
 
-                return (
-                    (!nameFilter || fullName.includes(nameFilter)) &&
-                    birthYearMatch &&
-                    deathYearMatch
-                );
-            });
+            const matchesBirthYear =
+                criteria.birthYear === "" || (birthYear !== null && birthYear === Number(criteria.birthYear));
 
-            setFilteredGraves(result);
-        },
-        [graves]
-    );
+            const matchesDeathYear =
+                criteria.deathYear === "" || (deathYear !== null && deathYear === Number(criteria.deathYear));
 
+            return matchesFullName && matchesBirthYear && matchesDeathYear;
+        });
+
+        setFilteredGraves(result);
+    }, [human]);
+    const updateFilterHuman = (filtered) => {
+        setFilteredGravesHuman(filtered);
+    };
 
     const selectGrave = (grave) => {
         setSelectedGrave(grave);
@@ -87,10 +91,11 @@ export default function Home() {
     return (
         <div>
             <Header />
-            <Filter onFilterChange={updateFilter} />
+            <Filter humans={human}  onFilterChange={updateFilter} />
 
                 <GraveList
-                    graves={filteredGraves}
+
+                    graves={filteredGraves.length > 0 ? filteredGraves : human}
                     role={userRole}
                     onSelectGrave={selectGrave}
                     onSaveGrave={updateGrave}
