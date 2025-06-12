@@ -1,71 +1,53 @@
 .grave-list {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    background-color: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .grave-list h2 {
-    font-size: 1.8em;
+    font-size: 22px;
     margin-bottom: 16px;
     color: #333;
 }
 
 .grave-item {
     border-bottom: 1px solid #ddd;
-    padding: 16px 0;
+    padding: 12px 0;
 }
 
-.grave-info {
-    cursor: pointer;
-}
-
-.grave-info h3 {
+.grave-item h3 {
     margin: 0;
-    color: #2c3e50;
+    font-size: 18px;
+    color: #444;
 }
 
-.grave-info p {
+.grave-item p {
     margin: 4px 0;
-    color: #555;
+    color: #666;
+    font-size: 15px;
 }
 
-.grave-edit-form input,
-.grave-edit-form textarea {
-    display: block;
+.grave-item input,
+.grave-item textarea {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 6px;
+    margin-bottom: 8px;
+    padding: 8px;
+    font-size: 14px;
     border: 1px solid #ccc;
-    font-size: 1em;
+    border-radius: 4px;
 }
 
-.grave-edit-form textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.grave-edit-form button,
 .grave-actions button {
-    background-color: #2e86de;
-    color: white;
-    padding: 10px 16px;
-    margin-top: 8px;
+    margin-right: 8px;
+    padding: 6px 10px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
+    background-color: #0078d4;
+    color: white;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
 }
 
-.grave-edit-form button:hover,
-.grave-actions button:hover {
-    background-color: #1e5faf;
-}
-
-.grave-actions {
-    margin-top: 8px;
-    display: flex;
-    gap: 10px;
+.grave-actions button:last-child {
+    background-color: #d43f3a;
 }
