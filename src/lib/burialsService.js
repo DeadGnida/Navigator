@@ -4,6 +4,7 @@ export async function GetByIdHuman(id) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     })
 
     if (!response.ok) {

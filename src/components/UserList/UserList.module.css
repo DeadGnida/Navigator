@@ -1,16 +1,14 @@
 .container {
-    max-width: 800px;
-    margin: 2rem auto;
     padding: 1rem;
     background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .heading {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
     text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
 }
 
 .table {
@@ -20,12 +18,29 @@
 
 .table th,
 .table td {
-    padding: 0.75rem 1rem;
-    border: 1px solid #e0e0e0;
-    text-align: left;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
 }
 
 .table th {
-    background-color: #f4f4f4;
-    font-weight: 600;
+    background-color: #f5f5f5;
+    text-align: left;
+}
+
+.actions button {
+    margin-right: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.actions button:first-of-type {
+    background-color: #0070f3;
+    color: white;
+}
+
+.actions button:last-of-type {
+    background-color: #e00;
+    color: white;
 }

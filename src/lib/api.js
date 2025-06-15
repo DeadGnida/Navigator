@@ -1,6 +1,7 @@
 // lib/api.js
 const API_BASE = "http://localhost:8080";
 
+
 // ------------- Работа с захоронениями (burial) -------------
 export async function getAllBurials() {
     const res = await fetch(`${API_BASE}/burial/getAllBurial`);
@@ -40,13 +41,13 @@ export async function deleteBurial(id) {
 
 // ------------- Работа с пользователями (user) -------------
 export async function getAllUsers() {
-    const res = await fetch(`${API_BASE}/user/getAllUser`);
+    const res = await fetch(`${API_BASE}/user/getAllUser`, {credentials: "include"});
     if (!res.ok) throw new Error("Не удалось получить список пользователей");
     return await res.json();
 }
 
 export async function getUserById(id) {
-    const res = await fetch(`${API_BASE}/user/getUserById/${id}`);
+    const res = await fetch(`${API_BASE}/user/getUserById/${id}`,{credentials: "include"});
     if (!res.ok) throw new Error("Не удалось получить пользователя по ID");
     return await res.json();
 }
@@ -55,21 +56,30 @@ export async function createUser(payload) {
     const res = await fetch(`${API_BASE}/user/createUser`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error("Не удалось создать пользователя");
     return await res.json();
 }
 
-export async function updateUser(id, payload) {
-    const res = await fetch(`${API_BASE}/user/updateUser/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+export async function deleteUser(id) {
+    const res = await fetch(`http://localhost:8080/user/deleteUser/${id}`, {
+        method: 'DELETE',
+        credentials: "include"
     });
-    if (!res.ok) throw new Error("Не удалось обновить пользователя");
-    return await res.json();
+    if (!res.ok) throw new Error('Ошибка удаления');
 }
+export async function updateUser(id, payload) {
+    const res = await fetch(`http://localhost:8080/user/updateUser/${id}`, {
+        method: 'PATCH',
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Ошибка обновления');
+}
+
 
 // ------------- Простейшая «авторизация» через fetch всех юзеров -------------
 // У вас в бэкенде нет отдельного /login, поэтому на клиенте просто

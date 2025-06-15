@@ -1,13 +1,14 @@
-/** components/UserList/UserList.jsx */
 "use client";
 
 import { useEffect, useState } from "react";
 import styles from "./UserList.module.css";
-import { getAllUsers } from "@/lib/api";
+import { getAllUsers, deleteUser } from "@/lib/api";
+import UpdateUser from "@/components/UpdateUser/UpdateUser";
 
 export default function UserList() {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -21,30 +22,51 @@ export default function UserList() {
         })();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+            await deleteUser(id);
+            setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+        } catch (err) {
+            console.error(err);
+            setError("Не удалось удалить пользователя");
+        }
+    };
+
     return (
         <div className={styles.container}>
             <h2 className={styles.heading}>Список пользователей</h2>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <table className={styles.table}>
-                <thead>
-                <tr>
-                    <th>Login</th>
-                    <th>Full Name</th>
-                    <th>Role</th>
-                    <th>Post</th>
-                </tr>
-                </thead>
-                <tbody>
-                {users.map((user) => (
-                    <tr key={user.id}>
-                        <td>{user.login}</td>
-                        <td>{user.fullName}</td>
-                        <td>{user.role}</td>
-                        <td>{user.post}</td>
+            {editingId ? (
+                <UpdateUser id={editingId} />
+            ) : (
+                <table className={styles.table}>
+                    <thead>
+                    <tr>
+                        <th>Логин</th>
+                        <th>Пароль</th>
+                        <th>ФИО</th>
+                        <th>Роль</th>
+                        <th>Пост</th>
+                        <th>Взаимодействие</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {users.map((user) => (
+                        <tr key={user.id}>
+                            <td>{user.login}</td>
+                            <td>{user.password}</td>
+                            <td>{user.fullName}</td>
+                            <td>{user.role}</td>
+                            <td>{user.post}</td>
+                            <td>
+                                <button onClick={() => setEditingId(user.id)}>Редактировать</button>
+                                <button onClick={() => handleDelete(user.id)}>Удалить</button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }

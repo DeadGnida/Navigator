@@ -1,26 +1,46 @@
-.formContainer {
-    max-width: 500px;
-    margin: 1rem auto;
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+    margin: auto;
     padding: 1rem;
-    background-color: #f1f5f9;
-    border-radius: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.formContainer input,
-.formContainer select {
-    width: 100%;
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputGroup input,
+.inputGroup select {
     padding: 0.5rem;
-    margin-bottom: 0.75rem;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-.submitBtn {
-    background-color: #22c55e;
+.button {
+    padding: 0.6rem;
+    background-color: #0070f3;
     color: white;
-    padding: 0.75rem;
     border: none;
-    border-radius: 6px;
-    width: 100%;
+    border-radius: 4px;
     cursor: pointer;
+}
+
+.button:hover {
+    background-color: #005bb5;
+}
+
+.error {
+    color: red;
+    font-size: 0.9rem;
+}
+
+.success {
+    color: green;
+    font-size: 0.9rem;
 }

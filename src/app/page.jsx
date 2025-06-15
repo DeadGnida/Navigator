@@ -8,7 +8,8 @@ import GraveList from "@/components/GraveList/GraveList";
 import CemeteryDetail from "@/components/CemeteryDetail/CemeteryDetail";
 import Footer from "@/components/Footer/Footer";
 import { getAllBurials, deleteBurial } from "@/lib/api";
-import {GetHumans} from "@/lib/humanService";
+import {GetHumans, updateHuman, deleteHuman} from "@/lib/humanService";
+
 
 export default function Home() {
     const [graves, setGraves] = useState([]);
@@ -18,11 +19,42 @@ export default function Home() {
     const [selectedHumanId, setSelectedHumanId] = useState(null);
     const [userRole, setUserRole] = useState("");
     const [filteredGravesHuman, setFilteredGravesHuman] = useState([]);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const stored = sessionStorage.getItem("user");
+        if (stored) setUser(JSON.parse(stored));
+    }, []);
+
+    useEffect(() => {
+        GetHumans()
+            .then(d => setHuman(Array.isArray(d) ? d : [d]))
+            .catch(console.error);
+    }, []);
 
 
+    // const updateGrave = async (h) => {
+    //     try {
+    //         const updated = await updateHuman(h);
+    //         setHuman(prev => prev.map(x => x.id === updated.id ? updated : x));
+    //     } catch (e) {
+    //         console.error(e);
+    //         alert('Ошибка обновления');
+    //     }
+    // };
+    //
+    // const removeGrave = async (id) => {
+    //     try {
+    //         await deleteHuman(id);
+    //         setHuman(prev => prev.filter(x => x.id !== id));
+    //     } catch (e) {
+    //         console.error(e);
+    //         alert('Ошибка удаления');
+    //     }
+    // };
 
 
-        useEffect(() => {
+    useEffect(() => {
             const fetchHumans = async () => {
                 try {
                     const data = await GetHumans();
@@ -70,38 +102,38 @@ export default function Home() {
         setSelectedHumanId(grave);
     };
 
-    const updateGrave = (updatedGrave) => {
-        // У Go‐сервиса нет PATCH для Burial, поэтому пока просто меняем локально
-        const updated = graves.map((g) => (g.id === updatedGrave.id ? updatedGrave : g));
-        setGraves(updated);
-        setFilteredGraves(updated);
+    const updateGrave = updatedGrave => {
+        setHuman(prev => prev.map(g => g.id === updatedGrave.id ? updatedGrave : g));
+        setFilteredGraves(prev => prev.map(g => g.id === updatedGrave.id ? updatedGrave : g));
         if (selectedGrave?.id === updatedGrave.id) {
             setSelectedGrave(updatedGrave);
         }
     };
 
-    const removeGrave = async (graveId) => {
+    const removeGrave = async graveId => {
+        console.log('Deleting grave with ID:', graveId);
         try {
-            await deleteBurial(graveId);
-            const updated = graves.filter((g) => g.id !== graveId);
-            setGraves(updated);
-            setFilteredGraves(updated);
+            await deleteHuman(graveId);
+            setHuman(prev => prev.filter(g => g.id !== graveId));
+            setFilteredGraves(prev => prev.filter(g => g.id !== graveId));
             if (selectedGrave?.id === graveId) setSelectedGrave(null);
-        } catch (err) {
+        } catch {
             alert("Ошибка при удалении захоронения");
-            console.error(err);
         }
     };
-
+    const onUserChange = useCallback((u) => {
+        setUser(u);
+    }, []);
+    console.log(user);
     return (
         <div>
-            <Header />
+            <Header onUserChange={onUserChange} />
             <Filter humans={human}  onFilterChange={updateFilter} />
 
                 <GraveList
 
                     graves={filteredGraves.length > 0 ? filteredGraves : human}
-                    role={userRole}
+                    user={user}
                     onSelectGrave={selectGrave}
                     onSelectGraveId={selectGraveId}
                     onSaveGrave={updateGrave}

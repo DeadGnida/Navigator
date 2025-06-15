@@ -30,7 +30,7 @@ export default function AddUser() {
     };
 
     return (
-        <div>
+        <div className={styles.container}>
             <h2>Добавить пользователя</h2>
             {error && <p style={{ color: "red" }}>{error}</p>}
             {success && <p style={{ color: "green" }}>{success}</p>}
@@ -38,7 +38,7 @@ export default function AddUser() {
                 <input
                     value={user.login}
                     onChange={(e) => setUser({ ...user, login: e.target.value })}
-                    placeholder="Login"
+                    placeholder="Логин"
                 />
             </div>
             <div className={styles.inputGroup}>
@@ -46,21 +46,21 @@ export default function AddUser() {
                     type="password"
                     value={user.password}
                     onChange={(e) => setUser({ ...user, password: e.target.value })}
-                    placeholder="Password"
+                    placeholder="Пароль"
                 />
             </div>
             <div className={styles.inputGroup}>
                 <input
                     value={user.fullName}
                     onChange={(e) => setUser({ ...user, fullName: e.target.value })}
-                    placeholder="Full Name"
+                    placeholder="ФИО"
                 />
             </div>
             <div className={styles.inputGroup}>
                 <input
                     value={user.post}
                     onChange={(e) => setUser({ ...user, post: e.target.value })}
-                    placeholder="Post"
+                    placeholder="Пост"
                 />
             </div>
             <div className={styles.inputGroup}>
@@ -72,7 +72,7 @@ export default function AddUser() {
                     <option value="admin">Admin</option>
                 </select>
             </div>
-            <button onClick={submitForm}>Добавить</button>
+            <button className={styles.button} onClick={submitForm}>Добавить</button>
         </div>
     );
 }

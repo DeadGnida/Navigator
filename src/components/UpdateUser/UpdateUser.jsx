@@ -1,4 +1,3 @@
-/** components/UpdateUser/UpdateUser.jsx */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,13 +16,12 @@ export default function UpdateUser({ id }) {
     const [success, setSuccess] = useState("");
 
     useEffect(() => {
-        // При монтировании подгружаем данные конкретного юзера
         (async () => {
             try {
                 const data = await getUserById(id);
                 setUser({
                     login: data.login,
-                    password: "", // пароль не возвращаем с сервера, оставляем пустым
+                    password: "",
                     fullName: data.fullName,
                     post: data.post,
                     role: data.role,
@@ -39,10 +37,8 @@ export default function UpdateUser({ id }) {
         setError("");
         setSuccess("");
         try {
-            // Собираем те поля, которые поменялись (PATCH‐запрос)
             const payload = {
                 login: user.login,
-                // Если пароль пустой, то вообще не шлём это поле
                 ...(user.password ? { password: user.password } : {}),
                 fullName: user.fullName,
                 post: user.post,
@@ -50,7 +46,6 @@ export default function UpdateUser({ id }) {
             };
             await updateUser(id, payload);
             setSuccess("Пользователь обновлён");
-            // Сбрасываем пароль из формы
             setUser((prev) => ({ ...prev, password: "" }));
         } catch (e) {
             console.error(e);
